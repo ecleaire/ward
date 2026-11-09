@@ -14,7 +14,7 @@ Godotの語句・APIの確認元：
 
 この環境では公式GitHub原本 `godotengine/godot` と `godotengine/godot-docs` の `4.5-stable` / `4.5` を参照しました。
 
-公開URL：**https://ecleaire.github.io/ward/**（[Actions #3でデプロイ成功](https://github.com/ecleaire/ward/actions/runs/42610364739)。この作業環境からの公開URL閲覧は通信制限のため未検証）
+公開URL：**https://ecleaire.github.io/ward/**（[Godotモード追加をActions #5でデプロイ成功](https://github.com/ecleaire/ward/actions/runs/42640102566)。この作業環境からの公開URL閲覧は通信制限のため未検証）
 
 ## 開発
 
