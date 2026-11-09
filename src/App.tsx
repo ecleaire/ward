@@ -2,9 +2,10 @@ import { createContext, useContext, useEffect, useMemo, useRef, useState, type C
 import { type Category, type Term } from './terms';
 import { CATALOGS, CATEGORIES as CATEGORY, MODE_KEY, readMode, type ModeId } from './catalog';
 import { makeQuiz, type QuizItem } from './quiz';
+import CodeLab from './CodeLab';
 import { EMPTY_PROGRESS, exportProgress, mergeProgress, parseProgress, readProgress, writeProgress, type Progress, type SpeechRate } from './progress';
 
-type View = 'home' | 'words' | 'study' | 'quiz';
+type View = 'home' | 'words' | 'study' | 'quiz' | 'code';
 
 const CatalogContext = createContext(CATALOGS.pybricks);
 const useCatalog = () => useContext(CatalogContext);
@@ -113,6 +114,7 @@ function Home({ onModeChange, modeSaveError }: { onModeChange: (mode: ModeId) =>
     <Nav active={view === 'words'} icon="Aa" label="単語リスト" onClick={() => { setSavedOnly(false); navigate('words'); }} />
     <Nav active={view === 'study'} icon="◇" label="カード学習" onClick={() => navigate('study')} />
     <Nav active={view === 'quiz'} icon="✓" label="ミニテスト" onClick={() => navigate('quiz')} />
+    <Nav active={view === 'code'} icon="</>" label="コード診断" onClick={() => navigate('code')} />
   </>;
   return <main className="app-shell" data-mode={mode}>
     <aside className="sidebar">
@@ -129,6 +131,7 @@ function Home({ onModeChange, modeSaveError }: { onModeChange: (mode: ModeId) =>
       {view === 'home' && <><HomeView progress={progress} known={known.length} saved={saved.length} onNavigate={navigate} reviewSaved={reviewSaved} /><DataTransfer data={data} onImport={importData} /></>}
       {view === 'words' && <WordsView filtered={filtered} search={search} category={category} known={known} saved={saved} savedOnly={savedOnly} setSavedOnly={setSavedOnly} setSearch={setSearch} setCategory={setCategory} toggleSaved={toggleSaved} markKnown={markKnown} speak={speak} />}
       {view === 'study' && <StudyView term={studyTerm} flipped={flipped} remaining={dueTerms.length} setFlipped={setFlipped} toggleSaved={toggleSaved} saved={saved.includes(studyTerm.word)} nextCard={nextCard} speak={speak} />}
+      {view === 'code' && <CodeLab mode={mode} />}
       {view === 'quiz' && quiz.length > 0 && <QuizView quiz={quiz} question={question} selected={selected} score={score} finished={finished} answer={answer} nextQuestion={nextQuestion} restart={startQuiz} speak={speak} />}
     </section>
     <nav className="mobile-nav" aria-label="スマホメニュー">{nav}</nav>
@@ -153,7 +156,7 @@ function HomeView({ progress, known, saved, onNavigate, reviewSaved }: { progres
       <div className="robot-panel" aria-label="今日の学習目標"><div className="coordinate">{catalog.id === 'godot' ? 'NODE · SCRIPT · 2D' : 'A1 · B2 · C3'}</div><div className="bot"><div className="bot-antenna" /><div className="bot-head"><i /><i /></div><div className="bot-body"><span>{catalog.id === 'godot' ? 'GD' : 'PB'}</span></div><div className="bot-wheel left" /><div className="bot-wheel right" /></div><div className="panel-line"><span>TODAY'S TARGET</span><b>5 WORDS</b></div></div>
     </section>
     <section className="metrics-grid"><article className="metric-card accent-lime"><span>学習の進捗</span><strong>{progress}<small>%</small></strong><div className="meter"><i style={{ width: `${progress}%` }} /></div><p>{known === TERMS.length ? '全単語を習得しました！' : `あと ${TERMS.length - known} 語でコンプリート`}</p></article><article className="metric-card"><span>習得した単語</span><strong>{known}<small> / {TERMS.length}</small></strong><p>カードやテストで習得した単語の数です。</p></article><article className="metric-card accent-coral"><span>あとで復習</span><strong>{saved}<small> words</small></strong><button onClick={reviewSaved}>チェックする →</button></article></section>
-    <section className="section-block"><div className="section-heading"><div><span className="section-number">01</span><h2>学び方を選ぶ</h2></div><p>短い時間でも、毎日ひとつずつ。</p></div><div className="mode-grid"><Mode index="01" icon="Aa" title="確認する" text="単語の意味とコードでの使われ方を一覧で確認。" action="単語リストへ" onClick={() => onNavigate('words')} /><Mode index="02" icon="◇" title="覚える" text="フラッシュカードをめくって、テンポよく反復学習。" action="カード学習へ" featured onClick={() => onNavigate('study')} /><Mode index="03" icon="✓" title="テストする" text="5問のミニテストで、理解できたかすぐチェック。" action="ミニテストへ" onClick={() => onNavigate('quiz')} /></div></section>
+    <section className="section-block"><div className="section-heading"><div><span className="section-number">01</span><h2>学び方を選ぶ</h2></div><p>短い時間でも、毎日ひとつずつ。</p></div><div className="mode-grid"><Mode index="01" icon="Aa" title="確認する" text="単語の意味とコードでの使われ方を一覧で確認。" action="単語リストへ" onClick={() => onNavigate('words')} /><Mode index="02" icon="◇" title="覚える" text="フラッシュカードをめくって、テンポよく反復学習。" action="カード学習へ" featured onClick={() => onNavigate('study')} /><Mode index="03" icon="✓" title="テストする" text="5問のミニテストで、理解できたかすぐチェック。" action="ミニテストへ" onClick={() => onNavigate('quiz')} /><Mode index="04" icon="</>" title="直してみる" text="短いコードを読んで、エラーの原因と正しい直し方をチェック。" action="コード診断へ" onClick={() => onNavigate('code')} /></div></section>
   </div>;
 }
 function Mode({ index, icon, title, text, action, featured, onClick }: { index: string; icon: string; title: string; text: string; action: string; featured?: boolean; onClick: () => void }) { return <button className={featured ? 'mode-card featured' : 'mode-card'} onClick={onClick}><span className="mode-index">{index}</span><div className="mode-icon">{icon}</div><h3>{title}</h3><p>{text}</p><b>{action} →</b></button>; }

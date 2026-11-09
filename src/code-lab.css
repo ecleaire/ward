@@ -1,0 +1,52 @@
+.code-lab { max-width:1120px; }
+.debug-intro,.debug-context { color:var(--muted); line-height:1.8; font-size:14px; }
+.debug-progress { display:flex; justify-content:space-between; gap:12px; margin-top:24px; font-size:12px; font-weight:700; }
+.code-lab progress { display:block; width:100%; height:7px; margin:12px 0 26px; accent-color:var(--lime); }
+.debug-question { min-width:0; padding:32px; border:1px solid var(--line); background:var(--panel); }
+.debug-kind { display:inline-block; padding:6px 10px; background:var(--ink); color:var(--lime); font-size:11px; font-weight:700; }
+.debug-question h2 { font-size:25px; line-height:1.5; margin:16px 0 12px; overflow-wrap:anywhere; }
+.debug-code { min-width:0; margin:20px 0; }
+.debug-code>span { display:block; margin-bottom:8px; font-size:11px; font-weight:700; color:var(--muted); }
+.debug-code pre { max-width:100%; overflow:auto; margin:0; padding:18px; border-radius:5px; background:var(--ink); color:#e7f9c9; font:12px/1.8 var(--font-geist-mono); white-space:pre; tab-size:4; }
+.debug-error { display:flex; flex-wrap:wrap; gap:8px 14px; padding:14px; background:#fff0e9; font-size:12px; line-height:1.7; overflow-wrap:anywhere; }
+.debug-error b { flex-shrink:0; }
+.debug-prompt { font-size:16px; line-height:1.7; margin:24px 0 16px; }
+.debug-choices { display:grid; grid-template-columns:1fr; gap:12px; }
+.debug-choice { min-width:0; min-height:64px; display:grid; grid-template-columns:28px minmax(0,1fr); align-items:start; gap:12px; padding:16px; background:#fafaf6; color:var(--ink); border:1px solid var(--line); border-radius:5px; text-align:left; cursor:pointer; font-size:14px; line-height:1.7; }
+.debug-choice:not(:disabled):hover { border-color:var(--ink); }
+.debug-letter { display:grid; place-items:center; min-height:28px; background:#e5e9e1; font:700 12px var(--font-geist-mono); }
+.debug-choice-body { min-width:0; overflow-wrap:anywhere; }
+.debug-choice code { display:block; max-width:100%; overflow-x:auto; padding-block:3px; font:12px/1.8 var(--font-geist-mono); white-space:pre; }
+.debug-choice.correct { background:#eaf4de; border-color:#79a92b; }
+.debug-choice.wrong { background:#ffebe5; border-color:#dc7155; }
+.debug-choice.muted { opacity:.65; }
+.debug-answer-label { display:block; margin-top:8px; font-size:12px; }
+.debug-feedback { margin-top:24px; padding:24px; border-left:4px solid #79a92b; background:#eef6e4; }
+.debug-feedback.wrong { background:#fff0e9; border-color:#dc7155; }
+.debug-feedback h3 { margin-top:0; font-size:19px; }
+.debug-feedback p { font-size:14px; line-height:1.9; }
+.debug-feedback .debug-related { font-size:12px; color:var(--muted); overflow-wrap:anywhere; }
+.debug-feedback .primary-button { box-shadow:none; }
+.debug-result { padding:35px; text-align:center; background:var(--panel); border:1px solid var(--line); }
+.debug-result p { line-height:1.8; color:var(--muted); }
+.debug-result-actions { display:flex; flex-wrap:wrap; align-items:center; justify-content:center; gap:16px; margin-top:28px; }
+.debug-review { margin-top:36px; }
+.debug-review h2 { font-size:23px; }
+.debug-review details { min-width:0; padding:16px; margin-bottom:12px; border:1px solid var(--line); background:var(--panel); }
+.debug-review summary { min-height:44px; padding-block:10px; font-weight:700; cursor:pointer; overflow-wrap:anywhere; }
+.debug-review .review-wrong { border-left:4px solid #dc7155; }
+.debug-review p { font-size:13px; line-height:1.9; }
+.debug-review p code { display:block; max-width:100%; overflow:auto; margin-top:6px; padding:10px; background:#edf0e9; font:12px/1.8 var(--font-geist-mono); white-space:pre; }
+.debug-question,.debug-review { overflow-wrap:anywhere; }
+@media (max-width:620px) {
+  .debug-question { padding:20px 14px; }
+  .debug-question h2 { font-size:21px; }
+  .debug-code pre { font-size:11px; padding:14px 12px; }
+  .debug-choice { padding:14px 10px; gap:8px; grid-template-columns:24px minmax(0,1fr); }
+  .debug-choice code { font-size:11px; }
+  .debug-feedback { padding:18px 12px; }
+  .debug-feedback .primary-button { width:100%; min-height:48px; }
+  .debug-result { padding:28px 16px; }
+  .debug-result-actions { flex-direction:column; align-items:stretch; }
+  .debug-review details { padding:12px; }
+}
