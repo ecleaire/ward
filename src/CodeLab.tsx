@@ -70,4 +70,3 @@ export default function CodeLab({ mode }: { mode: ModeId }) {
 function CodeBlock({ label, code }: { label: string; code: string }) {
   return <div className="debug-code"><span>{label}</span><pre tabIndex={0} aria-label={label}><code>{code}</code></pre></div>;
 }
-

@@ -7,6 +7,7 @@
 - 教材は `src/code-exercises.ts`、画面は `src/CodeLab.tsx`、CSSは `src/code-lab.css`。診断の結果は画面内だけで保持し、単語の永続履歴には加算しない。
 - 修正コードはPython構文解析12件、Godot 4.6.3の適切な文脈でのcheck-only12件が成功。ハードウェア・完成シーンでの実行検証とは区別する。
 - 単体16件・ブラウザー18件が成功。診断は320/390/1280pxの両モードで誤答・正答・4/5の採点・間違い1問の再挑戦・単語履歴を変更しないことまで確認。
+- `23acd9e` を[Actions #6](https://github.com/ecleaire/ward/actions/runs/42674680482)でデプロイ成功。公開URLは https://ecleaire.github.io/ward/ 。公開後の画面閲覧は環境の通信制限で未検証。
 
 ## 現在の学習モード
 
