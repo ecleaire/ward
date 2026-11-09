@@ -11,13 +11,14 @@
 - 音声APIに英語と速度1.0/0.65を渡すことはテスト済み。実機音声の聴取・全OS対応は未確認。
 - `main` へ `fc13d508d9bc0888d5e04823b3f2ac143d46d8eb` をpushし、リモートSHA一致を確認。
 - GitHub Actionsがpushで開始することを確認。実行：https://github.com/ecleaire/ward/actions/runs/42608701172
+- この初回実行は `configure-pages` で失敗。公開概要のAnnotationsで `Get Pages site failed` / `Not Found` と「Pagesを有効にしてGitHub Actionsを公開元に指定すること」を確認。静的成果物のビルドや単体・ブラウザーテストの問題ではなく、Pagesの初回設定が残っている。
 
 ## 公開の残作業
 
 1. クラウド環境の設定で、保存済みのネットワーク変更案を確認・保存してPublishする。追加するのは `api.github.com` と `ecleaire.github.io` の2ドメインだけ。既存のパッケージマネージャープリセット・リポジトリ設定は保持している。ドラフト保存だけでは実行環境へ適用されない。
 2. 環境の状態を再取得し、許可ルール適用を確認してからAPIと公開URLへ新規接続する。APIは現時点でプロキシのCONNECT 403により拒否される。`gh auth status` も失敗するが、通信制限の解消前に認証が無効と断定しない。Gitのpushは既存のプラットフォーム認証で成功している。
 3. GitHub Actionsの最新実行結果を確認。APIが使えなくても公開リポジトリのActions HTMLから概要を参照できる。詳細ログは認証が必要。
-4. Pagesが未有効なら、https://github.com/ecleaire/ward/settings/pages のSourceを **GitHub Actions** にする。必要な設定権限がこの環境にない場合はユーザーにこの操作だけ依頼する。トークンを会話やファイルへ保存しない。
+4. https://github.com/ecleaire/ward/settings/pages のSourceを **GitHub Actions** にする。初回Actionsのエラーから、この操作が必要なことを確認済み。この環境では設定APIへアクセスできていないため、ユーザーへ設定操作を依頼している。トークンを会話やファイルへ保存しない。
 5. 必要に応じ https://github.com/ecleaire/ward/actions/workflows/pages.yml でワークフローを再実行。
 6. https://ecleaire.github.io/ward/ でHTTP応答・`/ward/assets/`・画面操作を確認し、公開成功を報告する。現時点では公開成功・公開URLでの検証完了とは報告していない。
 
