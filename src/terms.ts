@@ -1,4 +1,4 @@
-export type Category = 'Motor' | 'Sensor' | 'Drive' | 'Hub' | 'Core';
+export type Category = 'Motor' | 'Sensor' | 'Drive' | 'Hub' | 'Core' | 'Scene' | 'Script' | 'GodotAPI' | 'Visual' | 'Interface';
 export type Term = { word: string; reading: string; meaning: string; category: Category; note: string; code: string };
 
 // 新しい単語はこの配列へ追加します。word は学習履歴の識別子です。
@@ -125,7 +125,7 @@ export const TERMS: Term[] = [
   { word: "asynchronous", reading: "アシンクロナス", meaning: "非同期の", category: "Core", note: "動作の完了待ちの間にほかの処理も進められる方式。Pybricksの非同期プログラムではawaitで動作の完了を待つ。", code: "await robot.straight(500)" },
 ];
 
-export const CATEGORY: Record<Category, { label: string; color: string }> = {
+export const CATEGORY = {
   Motor: { label: 'モーター', color: '#a5df2b' }, Sensor: { label: 'センサー', color: '#ff8d6b' },
   Drive: { label: '走行', color: '#5fc7d1' }, Hub: { label: 'ハブ', color: '#f3c94f' }, Core: { label: '基本', color: '#b6a8ff' },
 };

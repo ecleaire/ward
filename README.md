@@ -1,6 +1,18 @@
-# Pybricks Word Lab
+# Word Lab — Pybricks / Godot 2D
 
-Pybricksの英単語を日本語の意味・読み方・説明・コード例で学ぶ、スマートフォン対応の静的Reactアプリです。120語、検索、カテゴリー、★復習、カード学習、5問四択テスト、端末の英語音声再生を備えています。
+PybricksとGodot 2Dの英単語を日本語の意味・読み方・説明・コード例で学ぶ、スマートフォン対応の静的Reactアプリです。検索、カテゴリー、★復習、カード学習、5問四択テスト、端末の英語音声再生を備えています。
+
+画面上部の「学習モード」で **Pybricksモード（120語）** と **Godotモード（60語）** を切り替えます。選んだモードは次回も保持します。切り替えるとホームへ戻り、検索・カード・進行中のテストはリセットします。習得・★復習・出題履歴・発音速度はモードごとに保存します。既存のPybricks履歴はそのまま使えます。
+
+GodotモードはGodot 4.xの2D制作向けです。Node2D・Sprite2D・CharacterBody2Dなどのノード、`var`・`const`・`func`・`@export`・`@onready`などの構文、`_ready`・`_process`・`_physics_process`・`move_and_slide`などの関数、`position`・`velocity`などの変数を収録しています。コード例は対応するノードのスクリプトの一部で、参照先の子ノード・アニメーションやコールバックはプロジェクト内で用意します。TileMapLayerはGodot 4.3以降のノードです。
+
+Godotの語句・APIの確認元：
+
+- https://docs.godotengine.org/ja/stable/tutorials/scripting/gdscript/gdscript_basics.html
+- https://docs.godotengine.org/ja/stable/classes/class_node.html
+- https://docs.godotengine.org/ja/stable/classes/class_characterbody2d.html
+
+この環境では公式GitHub原本 `godotengine/godot` と `godotengine/godot-docs` の `4.5-stable` / `4.5` を参照しました。
 
 公開URL：**https://ecleaire.github.io/ward/**（[Actions #3でデプロイ成功](https://github.com/ecleaire/ward/actions/runs/42610364739)。この作業環境からの公開URL閲覧は通信制限のため未検証）
 
@@ -23,13 +35,13 @@ npm run test:e2e
 npm run preview
 ```
 
-ブラウザーテストは320px・390px・1280pxで検索、カテゴリー、★復習、カード、5問の採点と再挑戦、履歴20問の回避、発音速度の指定、履歴の入出力と再読み込みを検証します。システムの `/usr/bin/chromium` があれば使用し、なければPlaywrightのChromiumを使用します。任意の実行ファイルは `CHROMIUM_PATH` で指定できます。スクリーンショットは `test-results/` に生成します。
+ブラウザーテストは320px・390px・1280pxで検索、カテゴリー、★復習、カード、5問の採点と再挑戦、履歴20問の回避、発音速度の指定、履歴の入出力と再読み込みを検証します。両モードの切替・履歴の分離・選択モードの保存・旧Pybricksファイルとの互換性・異なるモードへの誤取込も確認します。システムの `/usr/bin/chromium` があれば使用し、なければPlaywrightのChromiumを使用します。任意の実行ファイルは `CHROMIUM_PATH` で指定できます。スクリーンショットは `test-results/` に生成します。
 
 音声は端末の `speechSynthesis` に依存します。普通は1.0、ゆっくりは0.65です。自動テストでは英語・速度を音声APIへ渡すことを確認し、実機での音声聴取は検証していません。
 
 ## 更新と公開
 
-単語は `src/terms.ts` の `TERMS` に追加します。`word` は履歴の識別子なので、既存語の変更時は保存済み履歴への影響も確認してください。語数は画面上で自動計算します。テストの初期語数も追加後の期待値へ更新します。
+Pybricksの単語は `src/terms.ts` の `TERMS`、Godotの単語は `src/godot-terms.ts` の `GODOT_TERMS` に追加します。モード設定は `src/catalog.ts` で管理します。`word` は各モード内での履歴識別子なので、既存語の変更時は保存済み履歴への影響も確認してください。語数は画面上で自動計算します。テストの初期語数も追加後の期待値へ更新します。
 
 1. 修正後に `npm test`、`npm run build`、`npm run test:e2e` を実行。
 2. `main` にコミットをpush。
@@ -56,7 +68,9 @@ npm run preview
 | `pybricks-quiz-history` | 直近20問 |
 | `pybricks-speech-rate` | 発音速度 |
 
-ホームの「学習データの引き継ぎ」からJSONファイルを書き出し、新しい端末・サイトで読み込みます。読み込み前に件数を表示し、既存の習得・復習へ追加します。発音速度は読み込んだ値になり、出題履歴は統合後の末尾20問になります。不明な単語IDは除きます。不正な型や非対応バージョンは取り込みません。
+Godotはそれぞれ `godot-known`・`godot-saved`・`godot-quiz-history`・`godot-speech-rate` を使います。選択モードは `word-lab-mode` に保存します。モードごとにセッションを作り直すため、同名の単語でも進捗は混ざりません。
+
+ホームの「学習データの引き継ぎ」から**現在のモード**のJSONファイルを書き出し、新しい端末・サイトの同じモードで読み込みます。読み込み前に件数を表示し、既存の習得・復習へ追加します。発音速度は読み込んだ値になり、出題履歴は統合後の末尾20問になります。不明な単語IDは除きます。不正な型や非対応バージョンは取り込みません。ファイルには `mode` を付け、別モードへの取込は拒否します。従来の `mode` がない形式と旧Sites形式はPybricksのデータとして読み込みます。
 
 **旧Sitesの履歴は自動で移りません。** サイトのoriginが違うためです。旧サイトに書き出し機能がない場合は、履歴があるブラウザーで旧サイトを開き、開発者ツールのコンソールで次を実行します。保存内容の読み取りのみで、旧データを変更しません。
 
