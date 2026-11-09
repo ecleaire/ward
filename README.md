@@ -2,7 +2,7 @@
 
 Pybricksの英単語を日本語の意味・読み方・説明・コード例で学ぶ、スマートフォン対応の静的Reactアプリです。90語、検索、カテゴリー、★復習、カード学習、5問四択テスト、端末の英語音声再生を備えています。
 
-公開先として設定済みのURL：**https://ecleaire.github.io/ward/**（GitHub Pagesの有効化とデプロイ成功が必要）
+公開URL：**https://ecleaire.github.io/ward/**（[Actions #3でデプロイ成功](https://github.com/ecleaire/ward/actions/runs/42610364739)。この作業環境からの公開URL閲覧は通信制限のため未検証）
 
 ## 開発
 

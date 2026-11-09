@@ -13,14 +13,17 @@
 - GitHub Actionsがpushで開始することを確認。実行：https://github.com/ecleaire/ward/actions/runs/42608701172
 - この初回実行は `configure-pages` で失敗。公開概要のAnnotationsで `Get Pages site failed` / `Not Found` と「Pagesを有効にしてGitHub Actionsを公開元に指定すること」を確認。静的成果物のビルドや単体・ブラウザーテストの問題ではなく、Pagesの初回設定が残っている。
 
-## 公開の残作業
+## 再試行後の公開状況
+
+- `04fbcde` をpushして再試行し、[Actions #3](https://github.com/ecleaire/ward/actions/runs/42610364739) が **Success** で完了。build 55秒、deploy 8秒。Pagesの初回設定に関する失敗は解消した。
+- Actionsのdeploy結果に **https://ecleaire.github.io/ward/** が表示され、`github-pages` アーティファクトも生成された。GitHub Pagesへの公開成功を確認済み。
+- このクラウド実行環境は引き続きリビジョン1・カスタム通信許可なし。公開URLへの取得は403になるため、公開サイト上のHTTP正常応答・アセット・画面操作の確認は未完了。ローカル成果物の単体6件・ブラウザー9件の成功は前述のとおり。
+
+## 公開URLの検証に残る作業
 
 1. クラウド環境の設定で、保存済みのネットワーク変更案を確認・保存してPublishする。追加するのは `api.github.com` と `ecleaire.github.io` の2ドメインだけ。既存のパッケージマネージャープリセット・リポジトリ設定は保持している。ドラフト保存だけでは実行環境へ適用されない。
 2. 環境の状態を再取得し、許可ルール適用を確認してからAPIと公開URLへ新規接続する。APIは現時点でプロキシのCONNECT 403により拒否される。`gh auth status` も失敗するが、通信制限の解消前に認証が無効と断定しない。Gitのpushは既存のプラットフォーム認証で成功している。
-3. GitHub Actionsの最新実行結果を確認。APIが使えなくても公開リポジトリのActions HTMLから概要を参照できる。詳細ログは認証が必要。
-4. https://github.com/ecleaire/ward/settings/pages のSourceを **GitHub Actions** にする。初回Actionsのエラーから、この操作が必要なことを確認済み。この環境では設定APIへアクセスできていないため、ユーザーへ設定操作を依頼している。トークンを会話やファイルへ保存しない。
-5. 必要に応じ https://github.com/ecleaire/ward/actions/workflows/pages.yml でワークフローを再実行。
-6. https://ecleaire.github.io/ward/ でHTTP応答・`/ward/assets/`・画面操作を確認し、公開成功を報告する。現時点では公開成功・公開URLでの検証完了とは報告していない。
+3. https://ecleaire.github.io/ward/ でHTTP応答・`/ward/assets/`・画面操作を確認する。Pages設定の変更や公開の再実行は、今の成功状態では不要。
 
 ## 保持する方針
 
