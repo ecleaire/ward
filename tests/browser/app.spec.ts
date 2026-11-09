@@ -19,7 +19,7 @@ for (const width of [320, 390, 1280]) {
         Object.defineProperty(window, 'speechSynthesis', { value: { cancel() {}, getVoices: () => [], speak: (utterance: SpeechSynthesisUtterance) => { (window as unknown as { spoken: unknown[] }).spoken = [utterance.text, utterance.lang, utterance.rate]; } } });
       });
       await page.goto('');
-      await expect(page.getByText('あと 90 語でコンプリート')).toBeVisible();
+      await expect(page.getByText(`あと ${TERMS.length} 語でコンプリート`)).toBeVisible();
       for (const button of [page.getByRole('button', { name: 'ゆっくり', exact: true }), page.getByRole('button', { name: 'チェックする →' })]) {
         const box = await button.boundingBox(); expect(box!.height).toBeGreaterThanOrEqual(44);
       }
@@ -27,7 +27,7 @@ for (const width of [320, 390, 1280]) {
       await page.screenshot({ path: `test-results/home-${width}.png`, fullPage: true });
       await page.getByRole('button', { name: 'ゆっくり', exact: true }).click();
       await navigate(page, '単語リスト');
-      await expect(page.locator('.word-row')).toHaveCount(90);
+      await expect(page.locator('.word-row')).toHaveCount(TERMS.length);
       await page.getByRole('textbox', { name: '単語を検索' }).fill('トルク');
       await expect(page.locator('.word-row')).toHaveCount(1);
       const star = page.getByRole('button', { name: 'torqueを復習リストに追加' });
@@ -44,7 +44,7 @@ for (const width of [320, 390, 1280]) {
       await page.screenshot({ path: `test-results/words-${width}.png`, fullPage: true });
       await page.getByRole('textbox', { name: '単語を検索' }).fill('');
       await page.locator('.filter-row').getByRole('button', { name: 'センサー', exact: true }).click();
-      await expect(page.locator('.word-row')).toHaveCount(14);
+      await expect(page.locator('.word-row')).toHaveCount(TERMS.filter(term => term.category === 'Sensor').length);
       await navigate(page, 'ホーム');
       await page.getByRole('button', { name: 'チェックする →' }).click();
       await expect(page.locator('.word-row')).toHaveCount(1);

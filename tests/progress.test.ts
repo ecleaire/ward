@@ -4,9 +4,9 @@ import { TERMS } from '../src/terms';
 import { makeQuiz } from '../src/quiz';
 import { EMPTY_PROGRESS, exportProgress, KEYS, mergeProgress, parseProgress, readProgress, writeProgress } from '../src/progress';
 
-test('90語すべてに学習に必要なデータと一意の識別子がある', () => {
-  assert.equal(TERMS.length, 90);
-  assert.equal(new Set(TERMS.map(term => term.word)).size, 90);
+test('120語すべてに学習に必要なデータと一意の識別子がある', () => {
+  assert.equal(TERMS.length, 120);
+  assert.equal(new Set(TERMS.map(term => term.word)).size, 120);
   for (const term of TERMS) for (const field of Object.values(term)) assert.ok(field.length);
   assert.equal(TERMS.find(term => term.word === 'torque')?.reading, 'トルク');
 });
