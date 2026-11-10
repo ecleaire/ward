@@ -3,7 +3,7 @@ import { shuffle } from './quiz';
 
 export type CodeExercise = {
   id: string;
-  kind: 'fix' | 'cause';
+  kind: 'fix' | 'cause' | 'reading' | 'meaning' | 'identify';
   title: string;
   context: string;
   prompt: string;
@@ -14,11 +14,12 @@ export type CodeExercise = {
   correctedCode: string;
   explanation: string;
   related: string[];
+  errorTerm?: { word: string; reading: string; meaning: string; note: string };
 };
 type ExerciseInput = Omit<CodeExercise, 'choices' | 'correctId'> & { options: [string, string, string, string] };
 
 // 執筆時は先頭を正解にする。画面では選択肢をシャッフルする。
-function exercise({ options, ...data }: ExerciseInput): CodeExercise {
+export function exercise({ options, ...data }: ExerciseInput): CodeExercise {
   return { ...data, choices: options.map((text, index) => ({ id: `${data.id}-${index}`, text })), correctId: `${data.id}-0` };
 }
 
@@ -56,9 +57,15 @@ export const CODE_EXERCISES: Record<ModeId, CodeExercise[]> = {
 export function makeCodeSession(mode: ModeId, recentIds: string[] = [], pool: CodeExercise[] = CODE_EXERCISES[mode]) {
   const fresh = pool.filter(question => !recentIds.includes(question.id));
   const available = shuffle(fresh.length >= Math.min(5, pool.length) ? fresh : pool);
-  const fix = available.find(question => question.kind === 'fix');
-  const cause = available.find(question => question.kind === 'cause');
-  const starters = [fix, cause].filter((item): item is CodeExercise => Boolean(item));
-  const rest = available.filter(question => !starters.some(item => item.id === question.id));
-  return shuffle([...starters, ...rest].slice(0, 5)).map(question => ({ ...question, choices: shuffle(question.choices) }));
+  const kinds = shuffle([...new Set(pool.map(question => question.kind))]);
+  const buckets = kinds.map(kind => available.filter(question => question.kind === kind));
+  const selected: CodeExercise[] = [];
+  while (selected.length < Math.min(5, available.length)) {
+    for (const bucket of buckets) {
+      if (selected.length === 5) break;
+      const question = bucket.shift();
+      if (question) selected.push(question);
+    }
+  }
+  return shuffle(selected).map(question => ({ ...question, choices: shuffle(question.choices) }));
 }

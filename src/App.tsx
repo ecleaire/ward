@@ -131,7 +131,7 @@ function Home({ onModeChange, modeSaveError }: { onModeChange: (mode: ModeId) =>
       {view === 'home' && <><HomeView progress={progress} known={known.length} saved={saved.length} onNavigate={navigate} reviewSaved={reviewSaved} /><DataTransfer data={data} onImport={importData} /></>}
       {view === 'words' && <WordsView filtered={filtered} search={search} category={category} known={known} saved={saved} savedOnly={savedOnly} setSavedOnly={setSavedOnly} setSearch={setSearch} setCategory={setCategory} toggleSaved={toggleSaved} markKnown={markKnown} speak={speak} />}
       {view === 'study' && <StudyView term={studyTerm} flipped={flipped} remaining={dueTerms.length} setFlipped={setFlipped} toggleSaved={toggleSaved} saved={saved.includes(studyTerm.word)} nextCard={nextCard} speak={speak} />}
-      {view === 'code' && <CodeLab mode={mode} />}
+      {view === 'code' && <CodeLab mode={mode} speak={speak} />}
       {view === 'quiz' && quiz.length > 0 && <QuizView quiz={quiz} question={question} selected={selected} score={score} finished={finished} answer={answer} nextQuestion={nextQuestion} restart={startQuiz} speak={speak} />}
     </section>
     <nav className="mobile-nav" aria-label="スマホメニュー">{nav}</nav>
