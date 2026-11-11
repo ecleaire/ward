@@ -19,17 +19,17 @@ for (const width of [320, 390, 1280]) {
     });
     await page.goto('');
     await expect(page.getByLabel('学習モード', { exact: true })).toHaveValue('pybricks');
-    await expect(page.getByText('あと 118 語でコンプリート')).toBeVisible();
+    await expect(page.getByText('あと 138 語でコンプリート')).toBeVisible();
     await page.getByLabel('学習モード', { exact: true }).selectOption('godot');
-    await expect(page.getByText('あと 60 語でコンプリート')).toBeVisible();
+    await expect(page.getByText('あと 80 語でコンプリート')).toBeVisible();
     await expect(page).toHaveTitle(/Godot/);
     if (width > 900) await expect(page.getByRole('link', { name: '公式ドキュメント ↗' })).toHaveAttribute('href', 'https://docs.godotengine.org/ja/stable/');
     await noOverflow(page);
     await page.screenshot({ path: `test-results/godot-home-${width}.png`, fullPage: true });
     await navigate(page, '単語リスト');
-    await expect(page.locator('.word-row')).toHaveCount(60);
+    await expect(page.locator('.word-row')).toHaveCount(GODOT_TERMS.length);
     await page.locator('.filter-row').getByRole('button', { name: '2Dノード', exact: true }).click();
-    await expect(page.locator('.word-row')).toHaveCount(12);
+    await expect(page.locator('.word-row')).toHaveCount(GODOT_TERMS.filter(term => term.category === 'Scene').length);
     await page.locator('.filter-row').getByRole('button', { name: 'すべて', exact: true }).click();
     for (const word of ['var', 'const', 'CharacterBody2D', '_physics_process']) {
       await page.getByRole('textbox', { name: '単語を検索' }).fill(word);
@@ -70,7 +70,7 @@ for (const width of [320, 390, 1280]) {
     await page.getByRole('button', { name: 'このデータを追加する' }).click();
     await expect(page.getByText('学習データを読み込みました。')).toBeVisible();
     await page.getByLabel('学習モード', { exact: true }).selectOption('pybricks');
-    await expect(page.getByText('あと 118 語でコンプリート')).toBeVisible();
+    await expect(page.getByText('あと 138 語でコンプリート')).toBeVisible();
     await expect(page.getByRole('button', { name: '普通', exact: true })).toHaveAttribute('aria-pressed', 'true');
     const original = await page.evaluate(() => ['pybricks-known', 'pybricks-saved', 'pybricks-quiz-history'].map(key => JSON.parse(localStorage.getItem(key)!)));
     expect(original).toEqual([['position', 'return'], ['torque'], ['motor']]);
@@ -79,7 +79,7 @@ for (const width of [320, 390, 1280]) {
     for (const mode of ['godot', 'pybricks', 'godot', 'pybricks']) await page.getByLabel('学習モード', { exact: true }).selectOption(mode);
     await page.reload();
     await expect(page.getByLabel('学習モード', { exact: true })).toHaveValue('pybricks');
-    await expect(page.getByText('あと 118 語でコンプリート')).toBeVisible();
+    await expect(page.getByText('あと 138 語でコンプリート')).toBeVisible();
     await noOverflow(page); expect(errors).toEqual([]);
   });
 }
