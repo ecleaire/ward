@@ -39,7 +39,7 @@ Godotでは `var` / `const`、`func`、`extends`、`connect`、Godot 4の `move_
 
 修正コード12件ずつについて、Pybricks側はPythonの構文解析、Godot側は適切な継承元・関数に組み込んでGodot 4.6.3の `--check-only` を実施しています。ロボット実機やGodotの完成シーンでの動作確認を表すものではありません。
 
-公開URL：**https://ecleaire.github.io/ward/**（[エラー名の読み方・意味をActions #7でデプロイ成功](https://github.com/ecleaire/ward/actions/runs/42828299487)。この作業環境からの公開URL閲覧は通信制限のため未検証）
+公開URL：**https://ecleaire.github.io/ward/**（[40語の追加をActions #9でデプロイ成功](https://github.com/ecleaire/ward/actions/runs/43041245734)。この作業環境からの公開URL閲覧は通信制限のため未検証）
 
 ## 開発
 
