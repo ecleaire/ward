@@ -6,6 +6,7 @@
 - Pybricksはencoder・PID・proportional・precision・frequency・integer・exceptionなど。Godotはint・float・Array・Dictionary・await・instantiate・Timer・RayCast2D・Tweenなど。
 - 各語に読み方・意味・説明・コード例を収録。既存の単語IDと履歴の形式は維持。
 - テスト44件成功。追加全40語の検索結果とコード例を320px幅で確認し、横はみ出しがないことも検証。
+- 公開時にブラウザーの追加導入で長時間待機したため、CIをランナー標準のGoogle Chrome／Chromiumで実行する構成へ変更。新しい公開処理が古い実行を置き換える設定と、15分のビルド上限を追加。
 
 ## エラー名の読み方・意味
 

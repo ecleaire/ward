@@ -64,6 +64,8 @@ npm run preview
 
 音声は端末の `speechSynthesis` に依存します。普通は1.0、ゆっくりは0.65です。自動テストでは英語・速度を音声APIへ渡すことを確認し、実機での音声聴取は検証していません。
 
+GitHub ActionsではUbuntuランナー標準のGoogle Chrome（なければChromium）を `CHROMIUM_PATH` に指定して検証します。ブラウザーの追加インストール待ちを避け、ビルドは15分で打ち切る設定です。新しい更新が来た場合は、進行中の古い公開処理を置き換えます。
+
 ## 更新と公開
 
 Pybricksの単語は `src/terms.ts` の `TERMS`、Godotの単語は `src/godot-terms.ts` の `GODOT_TERMS` に追加します。モード設定は `src/catalog.ts` で管理します。`word` は各モード内での履歴識別子なので、既存語の変更時は保存済み履歴への影響も確認してください。語数は画面上で自動計算します。テストの初期語数も追加後の期待値へ更新します。
