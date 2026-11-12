@@ -6,6 +6,7 @@
 - CollisionPolygon2D・VisibleOnScreenNotifier2D・Parallax2D・GPUParticles2D・NavigationAgent2Dなどのノードと、add_child・remove_child・get_tree・set_deferred・load・normalizedなどを収録。
 - 各語に日本語の読み方・意味・説明・Godot 4向けコード例を用意。単語IDと既存の保存データ形式は変更しない。
 - テスト44件成功。追加20語すべてについて、320px幅での検索・コード例・横はみ出しがないことを確認。
+- `6f74e1e` を[Actions #10](https://github.com/ecleaire/ward/actions/runs/43127815016)でデプロイ成功。Godot100語・Pybricks140語の構成を https://ecleaire.github.io/ward/ へ公開済み。
 
 ## 前回の単語追加（140語／80語時点）
 
