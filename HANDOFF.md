@@ -1,6 +1,13 @@
 # 継続作業メモ
 
-## 単語の追加（現在の語数）
+## Godotの追加20語（現在は100語）
+
+- Godot 2Dを80語から100語へ拡充。Pybricksは140語を維持。
+- CollisionPolygon2D・VisibleOnScreenNotifier2D・Parallax2D・GPUParticles2D・NavigationAgent2Dなどのノードと、add_child・remove_child・get_tree・set_deferred・load・normalizedなどを収録。
+- 各語に日本語の読み方・意味・説明・Godot 4向けコード例を用意。単語IDと既存の保存データ形式は変更しない。
+- テスト44件成功。追加20語すべてについて、320px幅での検索・コード例・横はみ出しがないことを確認。
+
+## 前回の単語追加（140語／80語時点）
 
 - 前回未反映だった追加候補を含め、各モード20語ずつ計40語を追加。Pybricks140語、Godot 2D80語。
 - Pybricksはencoder・PID・proportional・precision・frequency・integer・exceptionなど。Godotはint・float・Array・Dictionary・await・instantiate・Timer・RayCast2D・Tweenなど。
@@ -29,7 +36,7 @@
 
 ## 現在の学習モード
 
-- 画面上部からPybricks（140語）とGodot 2D（80語）を切替。Godotはノード名・GDScript構文（var/constなど）・関数・変数・描画・UI入力を収録。
+- 画面上部からPybricks（140語）とGodot 2D（100語）を切替。Godotはノード名・GDScript構文（var/constなど）・関数・変数・描画・UI入力を収録。
 - 単語とカテゴリーは `src/catalog.ts`、`src/terms.ts`、`src/godot-terms.ts` で管理。
 - 旧 `pybricks-*` の保存キーを維持。Godotは `godot-*` に分離。選択モードは `word-lab-mode` に保存。コード例の改行・字下げも表示する。
 - 書出しファイルはモード別。旧ファイルはPybricksとして互換読込、異なるモードへの取込は拒否する。

@@ -5,9 +5,9 @@ import { GODOT_TERMS } from '../src/godot-terms';
 import { EMPTY_PROGRESS, exportProgress, parseProgress, readProgress, writeProgress } from '../src/progress';
 import { makeQuiz } from '../src/quiz';
 
-test('Godot 2Dの80語にはノード名・var・const・関数と有効なカテゴリーがある', () => {
-  assert.equal(GODOT_TERMS.length, 80);
-  assert.equal(new Set(GODOT_TERMS.map(term => term.word)).size, 80);
+test('Godot 2Dの100語にはノード名・var・const・関数と有効なカテゴリーがある', () => {
+  assert.equal(GODOT_TERMS.length, 100);
+  assert.equal(new Set(GODOT_TERMS.map(term => term.word)).size, 100);
   for (const word of ['var', 'const', 'func', 'Node2D', 'Sprite2D', 'CharacterBody2D', '_ready', '_process', '_physics_process', 'move_and_slide', 'velocity']) {
     assert.ok(GODOT_TERMS.some(term => term.word === word), word);
   }

@@ -21,7 +21,7 @@ for (const width of [320, 390, 1280]) {
     await expect(page.getByLabel('学習モード', { exact: true })).toHaveValue('pybricks');
     await expect(page.getByText('あと 138 語でコンプリート')).toBeVisible();
     await page.getByLabel('学習モード', { exact: true }).selectOption('godot');
-    await expect(page.getByText('あと 80 語でコンプリート')).toBeVisible();
+    await expect(page.getByText('あと 100 語でコンプリート')).toBeVisible();
     await expect(page).toHaveTitle(/Godot/);
     if (width > 900) await expect(page.getByRole('link', { name: '公式ドキュメント ↗' })).toHaveAttribute('href', 'https://docs.godotengine.org/ja/stable/');
     await noOverflow(page);
