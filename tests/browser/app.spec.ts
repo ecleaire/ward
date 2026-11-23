@@ -97,7 +97,7 @@ for (const width of [320, 390, 1280]) {
     test('旧履歴の取込・統合・書出し・不正ファイル・再読込', async ({ page }) => {
       await page.goto('');
       const legacy = { 'pybricks-known': '["motor"]', 'pybricks-saved': '["torque"]', 'pybricks-quiz-history': '["angle"]', 'pybricks-speech-rate': 'slow' };
-      await page.locator('summary').click();
+      await page.locator('summary').filter({ hasText: '旧サイトから履歴を移すには' }).click();
       await page.getByLabel('旧サイトのJSON', { exact: true }).fill(JSON.stringify(legacy));
       await page.getByRole('button', { name: '貼り付けたデータを確認' }).click();
       await expect(page.getByText('読み込み内容：習得 1語・★復習 1語・出題履歴 1問・発音 ゆっくり')).toBeVisible();
