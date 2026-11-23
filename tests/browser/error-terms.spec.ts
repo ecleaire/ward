@@ -1,3 +1,4 @@
+import { speechText } from '../../src/speech';
 import { test, expect } from '@playwright/test';
 import { ERROR_TERMS, ERROR_EXERCISES } from '../../src/error-terms';
 
@@ -21,7 +22,7 @@ for (const width of [320, 390, 1280]) {
       await expect(page.locator('.error-glossary')).toContainText(first.reading);
       await page.locator('.error-glossary').getByRole('button', { name: `${first.word}の発音を聞く`, exact: true }).click();
       const spoken = await page.evaluate(() => (window as unknown as { spoken: unknown[] }).spoken);
-      expect(spoken[0]).toBe(first.word); expect(spoken[1]).toBe('en-US'); expect(spoken[2]).toBeCloseTo(0.65);
+      expect(spoken[0]).toBe(speechText(first.word)); expect(spoken[1]).toBe('en-US'); expect(spoken[2]).toBeCloseTo(0.65);
       await page.locator('.error-glossary summary').click();
       const kinds: string[] = [];
       for (let index = 0; index < 5; index++) {

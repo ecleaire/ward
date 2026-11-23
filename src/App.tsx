@@ -1,3 +1,4 @@
+import { speechText } from './speech';
 import { createContext, useContext, useEffect, useMemo, useRef, useState, type CSSProperties } from 'react';
 import { type Category, type Term } from './terms';
 import { CATALOGS, CATEGORIES as CATEGORY, MODE_KEY, readMode, type ModeId } from './catalog';
@@ -108,7 +109,7 @@ function Home({ onModeChange, modeSaveError }: { onModeChange: (mode: ModeId) =>
   function speak(word: string) {
     if (!('speechSynthesis' in window)) { setNotice('このブラウザーは音声再生に対応していません。'); return; }
     window.speechSynthesis.cancel();
-    const utterance = new SpeechSynthesisUtterance(word);
+    const utterance = new SpeechSynthesisUtterance(speechText(word));
     utterance.lang = 'en-US'; utterance.rate = speechRate === 'slow' ? 0.65 : 1;
     const voices = window.speechSynthesis.getVoices();
     const voice = voices.find(item => item.lang.toLowerCase().startsWith('en-us')) || voices.find(item => item.lang.toLowerCase().startsWith('en'));
@@ -179,7 +180,7 @@ function Mode({ index, icon, title, text, action, featured, onClick }: { index: 
 
 function WordsView({ filtered, search, category, known, saved, savedOnly, setSavedOnly, setSearch, setCategory, toggleSaved, markKnown, speak }: { filtered: Term[]; search: string; category: 'All' | Category; known: string[]; saved: string[]; savedOnly: boolean; setSavedOnly: (value: boolean) => void; setSearch: (value: string) => void; setCategory: (value: 'All' | Category) => void; toggleSaved: (word: string) => void; markKnown: (word: string, value: boolean) => void; speak: (word: string) => void }) {
   const catalog = useCatalog();
-  return <div className="page"><PageTitle eyebrow="VOCABULARY INDEX" title="単語リスト" meta={`${filtered.length} WORDS`} /><p className="pronunciation-policy">読み方は、日本のプログラミング・技術教材で定着しているカタカナ表記を優先しています。</p><div className="word-tools"><label className="search-box"><span>⌕</span><input value={search} onChange={event => setSearch(event.target.value)} placeholder="英語・日本語で検索" aria-label="単語を検索" /></label><div className="filter-row">{(['All', ...catalog.categories] as const).map(item => <button className={category === item ? 'active' : ''} key={item} onClick={() => setCategory(item)} aria-pressed={category === item}>{item === 'All' ? 'すべて' : CATEGORY[item].label}</button>)}</div><button className={savedOnly ? 'review-filter active' : 'review-filter'} onClick={() => setSavedOnly(!savedOnly)} aria-pressed={savedOnly}>★ 復習のみ</button></div>
+  return <div className="page"><PageTitle eyebrow="VOCABULARY INDEX" title="単語リスト" meta={`${filtered.length} WORDS`} /><p className="pronunciation-policy">カタカナは技術教材での表記を優先した読み方の目安です。英語音声とは一致しない場合があります。関数名は記号を除き、単語ごとに読み上げます。コード例は対応する機器の初期化・ノード配置・変数定義を済ませたプログラムの一部です。</p><div className="word-tools"><label className="search-box"><span>⌕</span><input value={search} onChange={event => setSearch(event.target.value)} placeholder="英語・日本語で検索" aria-label="単語を検索" /></label><div className="filter-row">{(['All', ...catalog.categories] as const).map(item => <button className={category === item ? 'active' : ''} key={item} onClick={() => setCategory(item)} aria-pressed={category === item}>{item === 'All' ? 'すべて' : CATEGORY[item].label}</button>)}</div><button className={savedOnly ? 'review-filter active' : 'review-filter'} onClick={() => setSavedOnly(!savedOnly)} aria-pressed={savedOnly}>★ 復習のみ</button></div>
     <div className="word-list">{filtered.map((term, index) => <article className="word-row" key={term.word}><span className="word-count">{String(index + 1).padStart(2, '0')}</span><div className="word-main"><div className="word-labels"><Badge term={term} /><button className={saved.includes(term.word) ? 'star saved' : 'star'} onClick={() => toggleSaved(term.word)} aria-label={`${term.word}を復習リスト${saved.includes(term.word) ? 'から外す' : 'に追加'}`} aria-pressed={saved.includes(term.word)}>★</button></div><h2>{term.word}</h2><small>{term.reading}</small><SpeakButton word={term.word} speak={speak} /></div><div className="word-detail"><h3>{term.meaning}</h3><p>{term.note}</p><code>{term.code}</code></div><button className={known.includes(term.word) ? 'known-toggle known' : 'known-toggle'} onClick={() => markKnown(term.word, !known.includes(term.word))} aria-pressed={known.includes(term.word)}>{known.includes(term.word) ? '✓ 習得済み' : '覚えた'}</button></article>)}{!filtered.length && <div className="empty-state">条件に合う単語がありません。</div>}</div>
   </div>;
 }
