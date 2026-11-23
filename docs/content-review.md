@@ -374,3 +374,7 @@
 | godot-error-7-reading | Stack overflow | reading |
 | godot-error-7-meaning | Stack overflow | meaning |
 | godot-error-7-identify | コードからエラーを選ぶ | identify |
+
+## アプリの検証結果
+
+単体テスト24件、ブラウザーテスト31件が成功。320・390・1280pxでの既存操作を含む。最終の教材修正後、全240語・エラー16語の表示と音声入力を確認するブラウザーテスト2件を再実行して成功した。音声APIはテスト用に置き換え、渡す文字列・言語・速度を確認している。実際の音声の聴取とは区別する。
