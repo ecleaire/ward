@@ -14,6 +14,8 @@ const overlappingMeanings = [
   ['angle', 'position', 'rotation', 'heading', 'orientation'],
   ['speed', 'velocity', 'turn rate', 'angular velocity'],
   ['torque', 'load', 'force'], ['sample', 'measurement'],
+  ['tilt', 'pitch', 'roll'], ['brightness', 'intensity'],
+  ['is_action_pressed', 'is_action_just_pressed'], ['lerp', 'lerp_angle'],
   ['function', 'method'], ['argument', 'parameter'],
   ['calibration', 'calibrated'], ['rotation sensor', 'encoder'],
   ['duty cycle', 'duty limit'], ['stop', 'coast', 'brake', 'hold'],
