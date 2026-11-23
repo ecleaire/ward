@@ -28,9 +28,12 @@ function Home({ onModeChange, modeSaveError }: { onModeChange: (mode: ModeId) =>
   const catalog = useCatalog();
   const { id: mode, terms: TERMS } = catalog;
   const [view, setView] = useState<View>('home');
-  const [data, setData] = useState<Progress>(() => {
-    try { return readProgress(localStorage, mode); } catch { return EMPTY_PROGRESS; }
+  const [initial] = useState(() => {
+    try { return { progress: readProgress(localStorage, mode), failed: false }; }
+    catch { return { progress: EMPTY_PROGRESS, failed: true }; }
   });
+  const [data, setData] = useState<Progress>(initial.progress);
+  const [loadError, setLoadError] = useState(initial.failed);
   const { known, saved, speechRate } = data;
   const [search, setSearch] = useState('');
   const [category, setCategory] = useState<'All' | Category>('All');
@@ -47,9 +50,10 @@ function Home({ onModeChange, modeSaveError }: { onModeChange: (mode: ModeId) =>
   const answerLocked = useRef(false);
 
   useEffect(() => {
+    if (loadError) return;
     try { writeProgress(localStorage, data, mode); setStorageError(false); }
     catch { setStorageError(true); }
-  }, [data, mode]);
+  }, [data, mode, loadError]);
   useEffect(() => () => window.speechSynthesis?.cancel(), []);
   useEffect(() => { document.title = `${catalog.label} Word Lab | コードで学ぶ英単語`; }, [catalog.label]);
 
@@ -61,6 +65,7 @@ function Home({ onModeChange, modeSaveError }: { onModeChange: (mode: ModeId) =>
   const dueTerms = useMemo(() => TERMS.filter(term => !known.includes(term.word)), [known, TERMS]);
   const studyPool = dueTerms.length ? dueTerms : TERMS;
   const studyTerm = studyPool[studyIndex % studyPool.length];
+  useEffect(() => { setFlipped(false); }, [studyTerm.word]);
   const progress = Math.round(known.length / TERMS.length * 100);
 
   function startQuiz() {
@@ -70,6 +75,7 @@ function Home({ onModeChange, modeSaveError }: { onModeChange: (mode: ModeId) =>
     setQuestion(0); setSelected(null); setScore(0); setFinished(false); answerLocked.current = false;
   }
   function navigate(next: View) {
+    if (loadError) return;
     if (next === 'quiz' && !quiz.length) startQuiz();
     if (next !== 'words') setSavedOnly(false);
     setView(next); window.speechSynthesis?.cancel(); window.scrollTo({ top: 0, behavior: 'smooth' });
@@ -79,8 +85,16 @@ function Home({ onModeChange, modeSaveError }: { onModeChange: (mode: ModeId) =>
   function markKnown(word: string, value: boolean) { setData(items => ({ ...items, known: value ? [...new Set([...items.known, word])] : items.known.filter(item => item !== word) })); }
   function nextCard(remembered: boolean) {
     markKnown(studyTerm.word, remembered); setFlipped(false);
-    // 習得済みにすると現在のカードが配列から抜けるため、次の未習得語を飛ばさない。
-    if (!remembered || !dueTerms.length) setStudyIndex(value => value + 1);
+    // 周回数を含む古い番号ではなく、現在のカード位置を基準に次を選ぶ。
+    const currentIndex = studyIndex % studyPool.length;
+    setStudyIndex(remembered && dueTerms.length ? currentIndex : currentIndex + 1);
+  }
+  function retryLoad() {
+    try {
+      const restored = readProgress(localStorage, mode);
+      setData(restored); setLoadError(false); setStorageError(false);
+      setStudyIndex(0); setFlipped(false); setQuiz([]); setView('home');
+    } catch { setLoadError(true); }
   }
   function answer(choice: string) {
     if (answerLocked.current) return;
@@ -128,11 +142,13 @@ function Home({ onModeChange, modeSaveError }: { onModeChange: (mode: ModeId) =>
       {modeSaveError && <p className="storage-warning" role="alert">モード設定を保存できませんでした。現在の画面では切り替えられます。</p>}
       {storageError && <p className="storage-warning" role="alert">学習履歴を端末に保存できません。ホームからデータを書き出して保管してください。</p>}
       {notice && <div className="notice" role="status">{notice}<button onClick={() => setNotice('')} aria-label="通知を閉じる">×</button></div>}
+      {loadError ? <section className="page" role="alert"><h1>学習履歴を読み込めませんでした</h1><p>保存済みの履歴を守るため、学習と保存を一時停止しています。読み込みを再試行してください。</p><button className="primary-button" onClick={retryLoad}>履歴の読み込みを再試行</button></section> : <>
       {view === 'home' && <><HomeView progress={progress} known={known.length} saved={saved.length} onNavigate={navigate} reviewSaved={reviewSaved} /><DataTransfer data={data} onImport={importData} /></>}
       {view === 'words' && <WordsView filtered={filtered} search={search} category={category} known={known} saved={saved} savedOnly={savedOnly} setSavedOnly={setSavedOnly} setSearch={setSearch} setCategory={setCategory} toggleSaved={toggleSaved} markKnown={markKnown} speak={speak} />}
       {view === 'study' && <StudyView term={studyTerm} flipped={flipped} remaining={dueTerms.length} setFlipped={setFlipped} toggleSaved={toggleSaved} saved={saved.includes(studyTerm.word)} nextCard={nextCard} speak={speak} />}
       {view === 'code' && <CodeLab mode={mode} speak={speak} />}
       {view === 'quiz' && quiz.length > 0 && <QuizView quiz={quiz} question={question} selected={selected} score={score} finished={finished} answer={answer} nextQuestion={nextQuestion} restart={startQuiz} speak={speak} />}
+      </>}
     </section>
     <nav className="mobile-nav" aria-label="スマホメニュー">{nav}</nav>
   </main>;
@@ -186,23 +202,36 @@ function DataTransfer({ data, onImport }: { data: Progress; onImport: (data: Pro
   const [pending, setPending] = useState<Progress | null>(null);
   const [message, setMessage] = useState('');
   const [legacyText, setLegacyText] = useState('');
+  const readSequence = useRef(0);
+  useEffect(() => () => { readSequence.current += 1; }, []);
   function prepare(text: string) {
     setPending(null);
     try { if (text.length > 1_000_000) throw new Error('ファイルが大きすぎます。'); setPending(parseProgress(JSON.parse(text), mode)); setMessage(''); }
     catch (error) { setMessage(error instanceof Error ? error.message : 'データを読み込めませんでした。'); }
+  }
+  async function readFile(file: File) {
+    const sequence = ++readSequence.current;
+    setPending(null); setMessage('ファイルを読み込んでいます。');
+    if (file.size > 1_000_000) { setMessage('ファイルが大きすぎます。'); return; }
+    try {
+      const text = await file.text();
+      if (sequence === readSequence.current) prepare(text);
+    } catch {
+      if (sequence === readSequence.current) { setPending(null); setMessage('ファイルを読み取れませんでした。'); }
+    }
   }
   function download() {
     const url = URL.createObjectURL(new Blob([exportProgress(data, mode)], { type: 'application/json' }));
     const link = document.createElement('a'); link.href = url; link.download = `${mode}-progress-${new Date().toISOString().slice(0, 10)}.json`;
     link.click(); setTimeout(() => URL.revokeObjectURL(url), 1000); setMessage('学習データを書き出しました。');
   }
-  return <section className="page transfer-page" aria-labelledby="transfer-title"><div className="transfer-panel"><h2 id="transfer-title">学習データの引き継ぎ</h2><p className="transfer-mode">{label}モードのデータ</p><p>習得・★復習・直近20問・発音速度をファイルに保存できます。別の端末や新しいサイトで読み込むと、今の履歴に追加されます。発音速度は読み込んだ設定になります。</p><div className="transfer-actions"><button className="secondary-button" onClick={download}>データを書き出す</button><label className="file-button">ファイルを読み込む<input type="file" accept=".json,application/json" aria-label="学習データファイル" onChange={async event => { const file = event.target.files?.[0]; event.target.value = ''; if (!file) return; if (file.size > 1_000_000) { setPending(null); setMessage('ファイルが大きすぎます。'); return; } try { prepare(await file.text()); } catch { setPending(null); setMessage('ファイルを読み取れませんでした。'); } }} /></label></div>
+  return <section className="page transfer-page" aria-labelledby="transfer-title"><div className="transfer-panel"><h2 id="transfer-title">学習データの引き継ぎ</h2><p className="transfer-mode">{label}モードのデータ</p><p>習得・★復習・直近20問・発音速度をファイルに保存できます。別の端末や新しいサイトで読み込むと、今の履歴に追加されます。発音速度は読み込んだ設定になります。</p><div className="transfer-actions"><button className="secondary-button" onClick={download}>データを書き出す</button><label className="file-button">ファイルを読み込む<input type="file" accept=".json,application/json" aria-label="学習データファイル" onChange={event => { const file = event.target.files?.[0]; event.target.value = ''; if (file) void readFile(file); }} /></label></div>
     {mode === 'pybricks' && <details><summary>旧サイトから履歴を移すには</summary><p>旧サイトと新サイトの保存場所は別です。旧サイトに書き出しボタンがない場合は、履歴がある端末の旧サイトを開き、ブラウザーの開発者ツールのコンソールで以下を実行してください。表示されたJSONをコピーして下へ貼り付けます。旧サイトのデータは変更しません。</p><pre><code>{`JSON.stringify({
   "pybricks-known": localStorage.getItem("pybricks-known") || "[]",
   "pybricks-saved": localStorage.getItem("pybricks-saved") || "[]",
   "pybricks-quiz-history": localStorage.getItem("pybricks-quiz-history") || "[]",
   "pybricks-speech-rate": localStorage.getItem("pybricks-speech-rate") || "normal"
-})`}</code></pre><label htmlFor="legacy-data">旧サイトのJSON</label><textarea id="legacy-data" value={legacyText} onChange={event => setLegacyText(event.target.value)} rows={5} /><button className="secondary-button" onClick={() => prepare(legacyText)}>貼り付けたデータを確認</button></details>}
-    {pending && <div className="import-preview"><p>読み込み内容：習得 {pending.known.length}語・★復習 {pending.saved.length}語・出題履歴 {pending.quizHistory.length}問・発音 {pending.speechRate === 'slow' ? 'ゆっくり' : '普通'}</p><button className="primary-button" onClick={() => { try { onImport(pending); setPending(null); setLegacyText(''); setMessage('学習データを読み込みました。'); } catch (error) { setMessage(error instanceof Error ? error.message : '保存できませんでした。'); } }}>このデータを追加する</button><button className="text-button" onClick={() => setPending(null)}>キャンセル</button></div>}
+})`}</code></pre><label htmlFor="legacy-data">旧サイトのJSON</label><textarea id="legacy-data" value={legacyText} onChange={event => setLegacyText(event.target.value)} rows={5} /><button className="secondary-button" onClick={() => { readSequence.current += 1; prepare(legacyText); }}>貼り付けたデータを確認</button></details>}
+    {pending && <div className="import-preview"><p>読み込み内容：習得 {pending.known.length}語・★復習 {pending.saved.length}語・出題履歴 {pending.quizHistory.length}問・発音 {pending.speechRate === 'slow' ? 'ゆっくり' : '普通'}</p><button className="primary-button" onClick={() => { try { onImport(pending); setPending(null); setLegacyText(''); setMessage('学習データを読み込みました。'); } catch (error) { setMessage(error instanceof Error ? error.message : '保存できませんでした。'); } }}>このデータを追加する</button><button className="text-button" onClick={() => { readSequence.current += 1; setPending(null); }}>キャンセル</button></div>}
     <p role="status">{message}</p></div></section>;
 }

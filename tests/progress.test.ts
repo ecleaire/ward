@@ -2,7 +2,7 @@ import test from 'node:test';
 import assert from 'node:assert/strict';
 import { TERMS } from '../src/terms';
 import { makeQuiz } from '../src/quiz';
-import { EMPTY_PROGRESS, exportProgress, KEYS, mergeProgress, parseProgress, readProgress, writeProgress } from '../src/progress';
+import { EMPTY_PROGRESS, exportProgress, KEYS, keysForMode, mergeProgress, parseProgress, readProgress, writeProgress } from '../src/progress';
 
 test('140語すべてに学習に必要なデータと一意の識別子がある', () => {
   assert.equal(TERMS.length, 140);
@@ -54,4 +54,18 @@ test('破損キーだけを初期化し、保存失敗時に元データへ戻�
   assert.equal(storage.getItem(KEYS.known), '{broken');
   assert.equal(storage.getItem(KEYS.saved), '["torque"]');
   assert.equal(storage.getItem(KEYS.quizHistory), null);
+});
+
+test('一時的なストレージ読取エラーは空の履歴として扱わず、再読込で元の履歴を回復する', () => {
+  for (const mode of ['pybricks', 'godot'] as const) {
+    const key = keysForMode(mode).known;
+    const word = mode === 'pybricks' ? 'motor' : 'Node';
+    let fail = true;
+    const storage = { getItem: (name: string) => {
+      if (name === key && fail) { fail = false; throw new Error('read unavailable'); }
+      return name === key ? JSON.stringify([word]) : null;
+    } };
+    assert.throws(() => readProgress(storage, mode), /read unavailable/);
+    assert.deepEqual(readProgress(storage, mode).known, [word]);
+  }
 });

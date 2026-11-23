@@ -39,7 +39,9 @@ export function readProgress(storage: Pick<Storage, 'getItem'>, mode: ModeId = '
   const keys = keysForMode(mode);
   // 一つのキーが破損しても、ほかの履歴を保持する。
   for (const key of ['known', 'saved', 'quizHistory'] as const) {
-    try { result[key] = wordList(JSON.parse(storage.getItem(keys[key]) || '[]'), key !== 'quizHistory', mode); } catch { /* Keep default. */ }
+    // 読み出し自体の失敗を「空の履歴」として扱うと、次の保存で元の履歴を消してしまう。
+    const raw = storage.getItem(keys[key]);
+    try { result[key] = wordList(JSON.parse(raw || '[]'), key !== 'quizHistory', mode); } catch { /* Keep default for malformed data. */ }
   }
   result.speechRate = storage.getItem(keys.speechRate) === 'slow' ? 'slow' : 'normal';
   return result;
