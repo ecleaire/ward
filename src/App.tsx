@@ -150,9 +150,29 @@ function Home({ onModeChange, modeSaveError }: { onModeChange: (mode: ModeId) =>
       {view === 'code' && <CodeLab mode={mode} speak={speak} />}
       {view === 'quiz' && quiz.length > 0 && <QuizView quiz={quiz} question={question} selected={selected} score={score} finished={finished} answer={answer} nextQuestion={nextQuestion} restart={startQuiz} speak={speak} />}
       </>}
+      <Disclaimer />
     </section>
     <nav className="mobile-nav" aria-label="スマホメニュー">{nav}</nav>
   </main>;
+}
+
+function Disclaimer() {
+  return <footer className="disclaimer-footer">
+    <details className="disclaimer">
+      <summary>免責事項・この教材について</summary>
+      <div>
+        <p>Word Labは、PybricksとGodotの英単語・プログラミングを学ぶための非公式教材です。Pybricks、GodotおよびLEGOの公式サービスではなく、各開発元・権利者による承認や推奨を示すものではありません。名称・商標等は各権利者に帰属します。</p>
+        <ul>
+          <li><strong>内容・コード例：</strong>正確さに努めていますが、完全性・最新性や、すべての環境での動作を保証するものではありません。対応バージョンや前提条件を確認し、最新の公式ドキュメントと併せてご利用ください。</li>
+          <li><strong>実機での安全：</strong>コード例は学習用の一部です。ロボットを動かす前に、配線・速度・可動範囲・周囲の安全を確認し、安全な条件で動作を試してください。</li>
+          <li><strong>読み方・音声：</strong>カタカナは技術教材での読み方の目安で、英語の発音を正確に表すものではありません。音声の声質・発音・再生可否は端末やブラウザーに依存します。</li>
+          <li><strong>問題・採点：</strong>設問の前提に基づく学習用の評価であり、実際のプログラム全体の正しさや技能を保証するものではありません。エラー文はバージョンや状況で異なる場合があります。</li>
+          <li><strong>学習履歴：</strong>履歴は利用中のブラウザーに保存されます。データの消去、端末の変更、保存機能の制限などで失われる場合があるため、必要に応じて書き出して保管してください。</li>
+          <li><strong>利用に伴う責任：</strong>本アプリの情報・コードは、ご自身の環境で確認したうえでご利用ください。利用により生じた損害について、運営者は法令で認められる範囲で責任を負いません。</li>
+        </ul>
+      </div>
+    </details>
+  </footer>;
 }
 
 function ModeSelector({ value, onChange }: { value: ModeId; onChange: (mode: ModeId) => void }) {

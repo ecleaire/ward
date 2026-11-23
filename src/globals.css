@@ -121,3 +121,12 @@ button:focus-visible,summary:focus-visible,textarea:focus-visible,input:focus-vi
   .study-actions { grid-template-columns:1fr 44px 1fr; gap:6px; }
 }
 @media (prefers-reduced-motion:reduce) { *,*::before,*::after { scroll-behavior:auto !important; transition:none !important; } }
+
+.disclaimer-footer { max-width:1280px; margin:0 auto; padding:0 5vw 32px; }
+.disclaimer { border-top:1px solid var(--line); color:var(--muted); font-size:12px; line-height:1.8; }
+.disclaimer summary { min-height:44px; padding:12px 0; cursor:pointer; font-weight:700; color:var(--ink); }
+.disclaimer summary:focus-visible { outline:2px solid var(--ink); outline-offset:3px; }
+.disclaimer p { margin:8px 0 16px; }
+.disclaimer ul { padding-left:22px; }
+.disclaimer li { margin-bottom:12px; overflow-wrap:anywhere; }
+@media (max-width:620px) { .disclaimer-footer { padding:0 16px 24px; } }
