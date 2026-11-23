@@ -70,7 +70,7 @@ function CodeSession({ mode, topic, speak }: { mode: ModeId; topic: Topic; speak
         return <details key={item.id} open={!right} className={right ? 'review-correct' : 'review-wrong'}><summary>{right ? '✓ 正解' : '× 要復習'}：{item.title}</summary><p>{item.context}</p><p>{item.prompt}</p><CodeBlock label="問題のコード" code={item.code} /><p>選んだ答え：<code>{item.choices.find(choice => choice.id === session.answers[item.id])?.text}</code></p><p>正しい答え：<code>{item.choices.find(choice => choice.id === item.correctId)?.text}</code></p><p>{item.explanation}</p>{item.errorTerm && <ErrorInfo term={item.errorTerm} speak={speak} />}<CodeBlock label="修正コード" code={item.correctedCode} /></details>;
       })}</section>
     </> : <>
-      <p className="debug-intro">{topic === 'errors' ? '英語の読み方・意味・コードからエラー名を選ぶ3種類の問題です。回答後に読み方と意味、修正例を確認できます。' : '短いコードを読んで、エラーの原因や正しい書き直しを選びましょう。回答後に修正コードと理由を確認できます。'}</p>
+      <p className="debug-intro">{topic === 'errors' ? 'エラー名の読み方や意味を答えたり、短いコードを見てエラー名を選んだりします。答えたあとで解説と修正例を確認できます。' : '短いコードを読んで、エラーの原因や直し方を選びましょう。答えると、修正例とその理由が表示されます。'}</p>
       <div className="debug-progress"><span>第{session.index + 1}問 / {session.questions.length}問</span><span>現在 {score}問正解</span></div>
       <progress max={session.questions.length} value={session.index + 1} aria-label="コード診断の進み具合" />
       <article className="debug-question" data-question-id={question.id}>
